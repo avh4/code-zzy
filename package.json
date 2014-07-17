@@ -1,0 +1,10 @@
+{
+  "name": "code-zzy",
+  "version": "0.0.0",
+  "scripts": {
+    "test": "mocha src/test/js"
+  },
+  "devDependencies": {
+    "mocha": "^1.20.1"
+  }
+}
