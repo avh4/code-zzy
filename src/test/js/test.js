@@ -1,22 +1,56 @@
 var PORT = 9090;
 
-var io = require('socket.io').listen(PORT);
-io.on('connection', function(socket) {
-  socket.on('set', function(value) {
-    socket.emit('value', value);
-  })
-});
+function newServer(port) {
+  var lastValue;
+  var io = require('socket.io').listen(port);
+  io.on('connection', function(socket) {
+    socket.emit('value', lastValue);
+    socket.on('set', function(value, ack) {
+      io.emit('value', value);
+      lastValue = value;
+      ack();
+    });
+  });
+}
+
+newServer(PORT);
 
 require('./env');
+var q = require('q');
 
 describe('server', function() {
-  it('can store an object', function(done) {
-    var io = require('socket.io-client')('http://localhost:' + PORT);
-    io.on('value', function(val) {
-      expect(val).to.eql({ a: 1, b: '2'});
-      done();
+  function newClient() {
+    return require('socket.io-client').connect('http://localhost:' + PORT, {'force new connection': true });
+  }
+
+  describe('setting a value', function() {
+    var client1Value;
+
+    function newSubscribedClient(receiveCount) {
+      var client = newClient();
+      var p = q.defer();
+      var i = 0;
+      client.on('value', function(val) {
+        if (i++ == receiveCount) p.resolve(val);
+      });
+      return p.promise;
+    }
+
+    beforeEach(function(done) {
+      client1Value = newSubscribedClient(1);
+      newClient().emit('set', {a: 1, b: '2'}, done);
     });
 
-    io.emit('set', {a: 1, b: '2'});
+    it('sends the value to subscribed clients', function() {
+      return client1Value.then(function(val) {
+        expect(val).to.eql({a: 1, b: '2'});
+      });
+    });
+
+    it('sends the value to clients that subscribe later', function() {
+      return newSubscribedClient(0).then(function(val) {
+        expect(val).to.eql({a: 1, b: '2'});
+      });
+    });
   });
 });
