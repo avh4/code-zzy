@@ -5,6 +5,11 @@
     "test": "mocha src/test/js"
   },
   "devDependencies": {
+    "chai": "^1.9.1",
     "mocha": "^1.20.1"
+  },
+  "dependencies": {
+    "socket.io": "^1.0.6",
+    "socket.io-client": "^1.0.6"
   }
 }
