@@ -1,33 +1,8 @@
 var PORT = 9090;
 
-function newServer(port) {
-  var lastValue;
-  var io;
-  var http = require('http');
-  var server = http.createServer();
-  return {
-    start: function() {
-      io = require('socket.io').listen(server);
-      io.on('connection', function(socket) {
-        console.log("CONN", lastValue);
-        socket.emit('value', lastValue);
-        socket.on('set', function(value, ack) {
-          io.emit('value', value);
-          lastValue = value;
-          ack();
-        });
-      });
-      server.listen(port);
-      return this;
-    },
-    destroy: function() {
-      server.close();
-    }
-  }
-}
-
 require('./env');
 var q = require('q');
+var Server = require('../../main/js');
 
 describe('server', function() {
   var server;
@@ -37,11 +12,11 @@ describe('server', function() {
   }
 
   beforeEach(function() {
-    server = newServer(PORT).start();
+    server = Server().listen(PORT);
   });
 
   afterEach(function() {
-    server.destroy();
+    server.close();
   });
 
   describe('setting a value', function() {
