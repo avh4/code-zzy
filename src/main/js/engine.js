@@ -3,15 +3,15 @@ var im = require('im');
 
 module.exports = function() {
   var subscribers = {};
-  var lastValues = {};
+  var lastValues = im.map();
   return {
     subscribe: function(path, callback) {
       if (!subscribers[path]) subscribers[path] = [];
       subscribers[path].push(callback);
-      callback(lastValues[path]);
+      callback(lastValues.get(path));
     },
     set: function(path, value) {
-      lastValues[path] = value;
+      lastValues = lastValues.assoc(path, value);
       if (subscribers[path]) {
         subscribers[path].forEach(function(sub) {
           sub(value);
@@ -20,7 +20,7 @@ module.exports = function() {
       return q();
     },
     add: function(path, value) {
-      var last = lastValues[path];
+      var last = lastValues.get(path);
       if (!last) last = im.vector();
       this.set(path, last.push(value));
     }
