@@ -17,6 +17,9 @@ module.exports = function() {
         });
       }
       return q();
+    },
+    add: function(path, value) {
+      this.set(path, [value]);
     }
   };
 }

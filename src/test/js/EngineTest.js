@@ -67,4 +67,16 @@ describe('engine', function() {
       });
     });
   });
+
+  describe('adding documents to a collection', function() {
+    it('sends the documents to future subscribers', function() {
+      return q().then(function() {
+        return engine.add('movies', { title: 'Maleficent' });
+      }).then(function() {
+        return newSubscribedClient('movies', 0);
+      }).then(function(val) {
+        expect(val).to.eql([ { title: 'Maleficent' } ]);
+      });
+    });
+  });
 });
