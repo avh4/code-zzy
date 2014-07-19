@@ -42,8 +42,8 @@ describe('engine', function() {
 
   describe('setting values at different paths', function() {
     it('keeps the values separate', function() {
-      dropboxValue = newSubscribedClient('dropbox', 1);
-      evernoteValue = newSubscribedClient('evernote', 1);
+      var dropboxValue = newSubscribedClient('dropbox', 1);
+      var evernoteValue = newSubscribedClient('evernote', 1);
       return q().then(function() {
         return engine.set('dropbox', {username: 'bobama'});
       }).then(function() {
@@ -57,6 +57,18 @@ describe('engine', function() {
 
     it('doesn\'t blow up when setting a path that is not subscribed to', function() {
       return engine.set('secretToEverybody', 'jewel');
+    });
+
+    it('remembers last values', function() {
+      return q().then(function() {
+        return engine.set('yelp', {username: 'wyankovi'});
+      }).then(function() {
+        return engine.set('otherStuff', 'junk');
+      }).then(function() {
+        return newSubscribedClient('yelp', 0);
+      }).then(function(val) {
+        expect(val).to.eql({username: 'wyankovi'});
+      });
     });
   });
 });

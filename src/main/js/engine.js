@@ -2,15 +2,15 @@ var q = require('q');
 
 module.exports = function() {
   var subscribers = {};
-  var lastValue;
+  var lastValues = {};
   return {
     subscribe: function(path, callback) {
       if (!subscribers[path]) subscribers[path] = [];
       subscribers[path].push(callback);
-      callback(lastValue);
+      callback(lastValues[path]);
     },
     set: function(path, value) {
-      lastValue = value;
+      lastValues[path] = value;
       if (subscribers[path]) {
         subscribers[path].forEach(function(sub) {
           sub(value);
