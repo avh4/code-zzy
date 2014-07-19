@@ -9,9 +9,11 @@ module.exports = function() {
     },
     set: function(path, value, callback) {
       lastValue = value;
-      subscribers[path].forEach(function(sub) {
-        sub(value);
-      });
+      if (subscribers[path]) {
+        subscribers[path].forEach(function(sub) {
+          sub(value);
+        });
+      }
       if (callback) callback();
     }
   };

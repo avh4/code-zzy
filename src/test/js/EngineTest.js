@@ -50,6 +50,10 @@ describe('engine', function() {
         dropboxValue.then(function(val) { expect(val).to.eql({username: 'bobama'})}),
         evernoteValue.then(function(val) { expect(val).to.eql({username: 'wadama'})}),
       ]);
-    })
+    });
+
+    it('doesn\'t blow up when setting a path that is not subscribed to', function() {
+      engine.set('secretToEverybody', 'jewel');
+    });
   });
 });
