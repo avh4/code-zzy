@@ -56,7 +56,7 @@ describe('engine', function() {
     });
 
     it('doesn\'t blow up when setting a path that is not subscribed to', function() {
-      engine.set('secretToEverybody', 'jewel');
+      return engine.set('secretToEverybody', 'jewel');
     });
   });
 });
