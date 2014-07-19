@@ -55,10 +55,6 @@ describe('engine', function() {
       });
     });
 
-    it('doesn\'t blow up when setting a path that is not subscribed to', function() {
-      return engine.set('secretToEverybody', 'jewel');
-    });
-
     it('remembers last values', function() {
       return q().then(function() {
         return engine.set('yelp', {username: 'wyankovi'});
