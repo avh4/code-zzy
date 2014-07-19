@@ -78,5 +78,20 @@ describe('engine', function() {
         expect(val).to.eql([ { title: 'Maleficent' } ]);
       });
     });
+
+    it('can add a multiple documents', function() {
+      return q().then(function() {
+        return engine.add('movies', { title: 'Maleficent' });
+      }).then(function() {
+        return engine.add('movies', { title: 'Gravity' });
+      }).then(function() {
+        return newSubscribedClient('movies', 0);
+      }).then(function(val) {
+        expect(val).to.eql([
+          { title: 'Maleficent' },
+          { title: 'Gravity' }
+        ]);
+      });
+    });
   });
 });

@@ -19,7 +19,10 @@ module.exports = function() {
       return q();
     },
     add: function(path, value) {
-      this.set(path, [value]);
+      var last = lastValues[path];
+      if (!last) last = [];
+      last.push(value);
+      this.set(path, last);
     }
   };
 }
