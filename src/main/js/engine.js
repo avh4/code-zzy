@@ -22,7 +22,7 @@ module.exports = function() {
     add: function(path, value) {
       var last = lastValues.get(path);
       if (!last) last = im.vector();
-      this.set(path, last.push(value));
+      return this.set(path, last.push(value));
     }
   };
 }
