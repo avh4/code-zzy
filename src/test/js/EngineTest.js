@@ -22,9 +22,9 @@ describe('engine', function() {
   describe('setting a value', function() {
     var client1Value;
 
-    beforeEach(function(done) {
+    beforeEach(function() {
       client1Value = newSubscribedClient('', 1);
-      engine.set('', {a: 1, b: '2'}, done);
+      return engine.set('', {a: 1, b: '2'});
     });
 
     it('sends the value to subscribed clients', function() {

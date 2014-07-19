@@ -1,3 +1,5 @@
+var q = require('q');
+
 module.exports = function() {
   var subscribers = {};
   var lastValue;
@@ -7,14 +9,14 @@ module.exports = function() {
       subscribers[path].push(callback);
       callback(lastValue);
     },
-    set: function(path, value, callback) {
+    set: function(path, value) {
       lastValue = value;
       if (subscribers[path]) {
         subscribers[path].forEach(function(sub) {
           sub(value);
         });
       }
-      if (callback) callback();
+      return q();
     }
   };
 }

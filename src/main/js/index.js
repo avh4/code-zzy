@@ -11,7 +11,7 @@ module.exports = function() {
           socket.emit('value', value);
         });
         socket.on('set', function(value, ack) {
-          engine.set('', value, ack);
+          engine.set('', value).then(ack);
         });
       });
       server.listen(port);
