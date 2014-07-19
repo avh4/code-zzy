@@ -1,4 +1,5 @@
 var q = require('q');
+var im = require('im');
 
 module.exports = function() {
   var subscribers = {};
@@ -20,9 +21,8 @@ module.exports = function() {
     },
     add: function(path, value) {
       var last = lastValues[path];
-      if (!last) last = [];
-      last.push(value);
-      this.set(path, last);
+      if (!last) last = im.vector();
+      this.set(path, last.push(value));
     }
   };
 }

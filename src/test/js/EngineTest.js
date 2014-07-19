@@ -75,7 +75,7 @@ describe('engine', function() {
       }).then(function() {
         return newSubscribedClient('movies', 0);
       }).then(function(val) {
-        expect(val).to.eql([ { title: 'Maleficent' } ]);
+        expect(val.toArray()).to.eql([ { title: 'Maleficent' } ]);
       });
     });
 
@@ -87,7 +87,7 @@ describe('engine', function() {
       }).then(function() {
         return newSubscribedClient('movies', 0);
       }).then(function(val) {
-        expect(val).to.eql([
+        expect(val.toArray()).to.eql([
           { title: 'Maleficent' },
           { title: 'Gravity' }
         ]);
