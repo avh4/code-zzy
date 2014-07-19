@@ -1,17 +1,18 @@
 module.exports = function() {
-  var subscribers = [];
+  var subscribers = {};
   var lastValue;
   return {
     subscribe: function(path, callback) {
-      subscribers.push(callback);
+      if (!subscribers[path]) subscribers[path] = [];
+      subscribers[path].push(callback);
       callback(lastValue);
     },
     set: function(path, value, callback) {
       lastValue = value;
-      subscribers.forEach(function(sub) {
+      subscribers[path].forEach(function(sub) {
         sub(value);
       });
-      callback();
+      if (callback) callback();
     }
   };
 }
