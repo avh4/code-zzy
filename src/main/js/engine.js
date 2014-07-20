@@ -6,15 +6,15 @@ var Notifier = require('./Notifier');
 module.exports = function() {
   var indexes = im.map();
   var lastValues = im.map();
-  var subs = new Notifier(lastValues);
+  var notifier = new Notifier(lastValues);
   var nextId = 100001;
   return {
     subscribe: function(path, callback) {
-      subs.subscribe(path, callback);
+      notifier.subscribe(path, callback);
     },
     set: function(path, value) {
       lastValues = lastValues.assoc(path, value);
-      subs.update(lastValues);
+      notifier.update(lastValues);
       return q();
     },
     add: function(path, value) {
