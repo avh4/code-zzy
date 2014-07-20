@@ -98,6 +98,17 @@ describe('engine', function() {
         ]);
       });
     });
+
+    it('gives documents different ids', function() {
+      return q.all([
+        engine.add('movies', { title: 'Maleficent' }),
+        engine.add('movies', { title: 'Gravity' })
+      ]).spread(function(m1, m2) {
+        expect(m1._id).to.not.be.undefined;
+        expect(m2._id).to.not.be.undefined;
+        expect(m1._id).to.not.eql(m2._id);
+      });
+    });
   });
 
   describe('one-to-many indexes', function() {
