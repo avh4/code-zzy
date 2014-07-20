@@ -13,7 +13,7 @@ Notifier.prototype.subscribe = function(path, callback) {
 Notifier.prototype.update = function(newData) {
   var oldData = this.data;
   this.data = newData;
-  this.subscriptions.toArray().forEach(function(sub) {
+  this.subscriptions.forEach(function(sub) {
     var oldVal = oldData.get(sub.path);
     var newVal = newData.get(sub.path);
     if (oldVal == newVal) return;
