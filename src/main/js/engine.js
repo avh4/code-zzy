@@ -1,36 +1,20 @@
 var q = require('q');
 var im = require('im');
 
-function newSubs() {
-  return {
-    subscribers: {},
-    subscribe: function(path, callback) {
-      if (!this.subscribers[path]) this.subscribers[path] = [];
-      this.subscribers[path].push(callback);
-    },
-    update: function(path, newValue) {
-      if (this.subscribers[path]) {
-        this.subscribers[path].forEach(function(sub) {
-          sub(newValue);
-        });
-      }
-    }
-  };
-}
+var Notifier = require('./Notifier');
 
 module.exports = function() {
-  var subs = newSubs();
   var indexes = im.map();
   var lastValues = im.map();
+  var subs = new Notifier(lastValues);
   var nextId = 100001;
   return {
     subscribe: function(path, callback) {
       subs.subscribe(path, callback);
-      callback(lastValues.get(path));
     },
     set: function(path, value) {
       lastValues = lastValues.assoc(path, value);
-      subs.update(path, value);
+      subs.update(lastValues);
       return q();
     },
     add: function(path, value) {
