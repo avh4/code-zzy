@@ -3,6 +3,7 @@ var im = require('im');
 
 module.exports = function() {
   var subscribers = {};
+  var indexes = im.map();
   var lastValues = im.map();
   return {
     subscribe: function(path, callback) {
@@ -23,14 +24,15 @@ module.exports = function() {
       var last = lastValues.get(path);
       if (!last) last = im.vector();
       value._id = 'a';
-      if (path === 'flights') {
-        value.passengers = [ 'a' ];
+      if (indexes.get(path)) {
+        value[indexes.get(path)] = [ 'a' ];
       }
       return this.set(path, last.push(value)).then(function() {
         return value;
       });
     },
     addIndex: function(parent, child, childField) {
+      indexes = indexes.assoc(parent, child);
     }
   };
 }
