@@ -34,7 +34,7 @@ describe('server', function() {
 
     beforeEach(function(done) {
       client1Value = newSubscribedClient(1);
-      newClient().emit('set', {a: 1, b: '2'}, done);
+      newClient().emit('set', {a: 1, b: '2'}, function(_) { done() });
     });
 
     it('sends the value to subscribed clients', function() {

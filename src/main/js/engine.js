@@ -22,7 +22,15 @@ module.exports = function() {
     add: function(path, value) {
       var last = lastValues.get(path);
       if (!last) last = im.vector();
-      return this.set(path, last.push(value));
+      value._id = 'a';
+      if (path === 'flights') {
+        value.passengers = [ 'a' ];
+      }
+      return this.set(path, last.push(value)).then(function() {
+        return value;
+      });
+    },
+    addIndex: function(parent, child, childField) {
     }
   };
 }

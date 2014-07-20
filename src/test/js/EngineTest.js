@@ -70,26 +70,55 @@ describe('engine', function() {
 
   describe('adding documents to a collection', function() {
     it('sends the documents to future subscribers', function() {
+      var movie;
       return q().then(function() {
         return engine.add('movies', { title: 'Maleficent' });
-      }).then(function() {
+      }).then(function(_movie) {
+        movie = _movie;
         return newSubscribedClient('movies', 0);
       }).then(function(val) {
-        expect(val.toArray()).to.eql([ { title: 'Maleficent' } ]);
+        expect(val.toArray()).to.eql([ { _id: movie._id, title: 'Maleficent' } ]);
       });
     });
 
     it('can add a multiple documents', function() {
+      var m1, m2;
       return q().then(function() {
         return engine.add('movies', { title: 'Maleficent' });
-      }).then(function() {
+      }).then(function(_m1) {
+        m1 = _m1;
         return engine.add('movies', { title: 'Gravity' });
-      }).then(function() {
+      }).then(function(_m2) {
+        m2 = _m2;
         return newSubscribedClient('movies', 0);
       }).then(function(val) {
         expect(val.toArray()).to.eql([
-          { title: 'Maleficent' },
-          { title: 'Gravity' }
+          { _id: m1._id, title: 'Maleficent' },
+          { _id: m2._id, title: 'Gravity' }
+        ]);
+      });
+    });
+  });
+
+  describe('one-to-many indexes', function() {
+    it('adding a child updates the parent', function() {
+      var flight;
+      var passenger;
+      return q().then(function() {
+        return engine.addIndex('flights', 'passengers', 'flight');
+      }).then(function() {
+        return engine.add('flights', { number: 107 });
+      }).then(function(_flight) {
+        flight = _flight;
+        expect(flight._id).to.not.be.undefined;
+        return engine.add('passengers', { flight: flight._id });
+      }).then(function(_passenger) {
+        passenger = _passenger;
+        expect(passenger._id).to.not.be.undefined;
+        return newSubscribedClient('flights', 0);
+      }).then(function(val) {
+        expect(val.toArray()).to.eql([
+          { _id: flight._id, number: 107, passengers: [ passenger._id ] }
         ]);
       });
     });
